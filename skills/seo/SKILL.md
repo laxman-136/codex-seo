@@ -1,6 +1,6 @@
 ---
 name: seo
-description: "Comprehensive SEO analysis for any website, page, business, or topic. Full site audits, SEO checks, single-page analysis, technical SEO (crawlability, indexability, Core Web Vitals with INP), schema markup, content quality (E-E-A-T), image optimization, sitemap analysis, GEO for AI Overviews/ChatGPT/Perplexity, and SEO best-practice planning. Industry detection for SaaS, e-commerce, local, publishers, agencies. Triggers on: SEO, audit, full SEO check, SEO best practices, optimize my site, ranking, organic search, schema, Core Web Vitals, sitemap, E-E-A-T, AI Overviews, GEO, technical SEO, content quality, page speed, structured data."
+description: "Comprehensive SEO analysis for any website, page, business, or topic. Full site audits, SEO checks, single-page analysis, technical SEO (crawlability, indexability, Core Web Vitals with INP), schema markup, content quality (E-E-A-T), competitive content briefs, image optimization, sitemap analysis, GEO for AI Overviews/ChatGPT/Perplexity, and SEO best-practice planning. Industry detection for SaaS, e-commerce, local, publishers, agencies. Triggers on: SEO, audit, full SEO check, SEO best practices, optimize my site, ranking, organic search, schema, Core Web Vitals, sitemap, E-E-A-T, AI Overviews, GEO, technical SEO, content quality, content brief, content outline, page speed, structured data."
 user-invokable: true
 argument-hint: "[command] [url]"
 license: MIT
@@ -32,6 +32,7 @@ Reference: `references/shared-data-cache.md` for schemas and dependency map.
 Check these cache files when present:
 - `.seo-cache/site-meta.json` for domain, business type, industry, and crawl context
 - `.seo-cache/audit-scores.json` for audit summary context from a prior full audit
+- `.seo-cache/content-brief.json` for the latest deterministic content-brief context
 - `.seo-cache/pages/{url-slug}/page-analysis.json` for page-level specialist context
 
 - If found: parse and use the data (note "Using cached [X] from [date]")
@@ -50,6 +51,7 @@ Check these cache files when present:
 | `/seo images <url or optimize>` | Image SEO: on-page audit, SERP analysis, file optimization |
 | `/seo technical <url>` | Technical SEO audit (9 categories) |
 | `/seo content <url>` | E-E-A-T and content quality analysis |
+| `/seo content-brief <url-or-keyword> [page-type]` | Evidence-aware content brief or outline |
 | `/seo geo <url>` | AI Overviews / Generative Engine Optimization |
 | `/seo plan <business-type>` | Strategic SEO planning |
 | `/seo programmatic [url\|plan]` | Programmatic SEO analysis and planning |
@@ -133,6 +135,7 @@ Display after these commands complete their full output:
 - `/seo page` (after deep single-page analysis)
 - `/seo technical` (after technical audit report)
 - `/seo content` (after E-E-A-T content assessment)
+- `/seo content-brief` (after a full writing brief or outline)
 - `/seo schema` (after schema detection/validation report)
 - `/seo sitemap` (after sitemap analysis or generation)
 - `/seo geo` (after GEO optimization report)
@@ -194,40 +197,42 @@ Weighted aggregate of all categories:
 
 ## Sub-Skills
 
-This skill orchestrates 26 specialized sub-skills, including optional extension-backed workflows:
+This skill orchestrates 27 specialized sub-skills, including optional extension-backed workflows:
 
 1. **seo-audit** -- Full website audit with parallel delegation
 2. **seo-page** -- Deep single-page analysis
 3. **seo-technical** -- Technical SEO (9 categories)
 4. **seo-content** -- E-E-A-T and content quality
-5. **seo-schema** -- Schema markup detection and generation
-6. **seo-images** -- Image optimization, SERP analysis, file optimization
-7. **seo-sitemap** -- Sitemap analysis and generation
-8. **seo-geo** -- AI Overviews / GEO optimization
-9. **seo-performance** -- Core Web Vitals and performance analysis
-10. **seo-visual** -- Screenshot, mobile, and above-the-fold UX analysis
-11. **seo-plan** -- Strategic planning with templates
-12. **seo-programmatic** -- Programmatic SEO analysis and planning
-13. **seo-competitor-pages** -- Competitor comparison page generation
-14. **seo-hreflang** -- Hreflang/i18n SEO audit, cultural profiles, content parity
-15. **seo-local** -- Local SEO (GBP, NAP, citations, reviews, local schema, multi-location)
-16. **seo-maps** -- Maps intelligence (geo-grid, GBP audit, reviews, competitor radius)
-17. **seo-google** -- Google SEO APIs (GSC, PageSpeed, CrUX, Indexing API, GA4)
-18. **seo-backlinks** -- Backlink profile analysis (free: Moz, Bing, CC; premium: DataForSEO)
-19. **seo-cluster** -- SERP-based semantic clustering
-20. **seo-sxo** -- Search Experience Optimization
-21. **seo-drift** -- SEO drift monitoring
-22. **seo-ecommerce** -- E-commerce SEO intelligence
-23. **seo-firecrawl** -- Full-site crawling and site mapping via Firecrawl MCP (extension)
-24. **seo-dataforseo** -- Live SEO data via DataForSEO MCP (extension)
-25. **seo-image-gen** -- AI image generation for SEO assets via Gemini (extension)
-26. **seo-flow** -- FLOW framework integration (Find -> Leverage -> Optimize -> Win, 41 AI prompts, CC BY 4.0)
+5. **seo-content-brief** -- Evidence-aware competitive writing briefs and outlines
+6. **seo-schema** -- Schema markup detection and generation
+7. **seo-images** -- Image optimization, SERP analysis, file optimization
+8. **seo-sitemap** -- Sitemap analysis and generation
+9. **seo-geo** -- AI Overviews / GEO optimization
+10. **seo-performance** -- Core Web Vitals and performance analysis
+11. **seo-visual** -- Screenshot, mobile, and above-the-fold UX analysis
+12. **seo-plan** -- Strategic planning with templates
+13. **seo-programmatic** -- Programmatic SEO analysis and planning
+14. **seo-competitor-pages** -- Competitor comparison page generation
+15. **seo-hreflang** -- Hreflang/i18n SEO audit, cultural profiles, content parity
+16. **seo-local** -- Local SEO (GBP, NAP, citations, reviews, local schema, multi-location)
+17. **seo-maps** -- Maps intelligence (geo-grid, GBP audit, reviews, competitor radius)
+18. **seo-google** -- Google SEO APIs (GSC, PageSpeed, CrUX, Indexing API, GA4)
+19. **seo-backlinks** -- Backlink profile analysis (free: Moz, Bing, CC; premium: DataForSEO)
+20. **seo-cluster** -- SERP-based semantic clustering
+21. **seo-sxo** -- Search Experience Optimization
+22. **seo-drift** -- SEO drift monitoring
+23. **seo-ecommerce** -- E-commerce SEO intelligence
+24. **seo-firecrawl** -- Full-site crawling and site mapping via Firecrawl MCP (extension)
+25. **seo-dataforseo** -- Live SEO data via DataForSEO MCP (extension)
+26. **seo-image-gen** -- AI image generation for SEO assets via Gemini (extension)
+27. **seo-flow** -- FLOW framework integration (Find -> Leverage -> Optimize -> Win, 41 AI prompts, CC BY 4.0)
 
 ## Subagents
 
 For parallel analysis during audits:
 - `seo-technical` -- Crawlability, indexability, security, CWV
 - `seo-content` -- E-E-A-T, readability, thin content
+- `seo-content-brief` -- Search intent, competitor gaps, writing outline, information gain
 - `seo-schema` -- Detection, validation, generation
 - `seo-sitemap` -- Structure, coverage, quality gates
 - `seo-performance` -- Core Web Vitals measurement

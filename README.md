@@ -8,7 +8,7 @@
 
 # Codex SEO - SEO Audit Skill Suite for Codex
 
-Codex-first SEO analysis suite with 1 orchestrator skill, 26 specialist workflows, 24 TOML agent profiles, MCP/API extensions, deterministic headless runners, and premium audit report generation.
+Codex-first SEO analysis suite with 1 orchestrator skill, 27 specialist workflows, 25 TOML agent profiles, MCP/API extensions, deterministic headless runners, and premium audit report generation.
 
 [![CI](https://github.com/AgriciDaniel/codex-seo/actions/workflows/runners-ci.yml/badge.svg)](https://github.com/AgriciDaniel/codex-seo/actions/workflows/runners-ci.yml)
 [![Release](https://img.shields.io/github/v/release/AgriciDaniel/codex-seo?label=Release)](https://github.com/AgriciDaniel/codex-seo/releases)
@@ -19,7 +19,7 @@ Codex-first SEO analysis suite with 1 orchestrator skill, 26 specialist workflow
 
 Codex SEO is a Codex-native port of [`AgriciDaniel/claude-seo`](https://github.com/AgriciDaniel/claude-seo), synchronized to upstream `main` at `a9cf338` and adapted for Codex skills, Codex plugins, TOML agents, shared cache artifacts, and repeatable local/API execution.
 
-It covers technical SEO, on-page analysis, content quality, E-E-A-T, schema markup, image optimization, sitemap architecture, Core Web Vitals, GEO/AEO for AI search, backlinks, local SEO, maps intelligence, Google APIs, semantic clustering, SXO, drift monitoring, e-commerce SEO, hreflang, FLOW prompts, DataForSEO, Firecrawl, and Gemini/nanobanana image workflows.
+It covers technical SEO, on-page analysis, content quality, E-E-A-T, competitive content briefs, schema markup, image optimization, sitemap architecture, Core Web Vitals, GEO/AEO for AI search, backlinks, local SEO, maps intelligence, Google APIs, semantic clustering, SXO, drift monitoring, e-commerce SEO, hreflang, FLOW prompts, DataForSEO, Firecrawl, and Gemini/nanobanana image workflows.
 
 ## Contents
 
@@ -134,8 +134,8 @@ Codex SEO is designed as a Codex-first routing layer: the user can ask naturally
 flowchart LR
   user["User prompt<br/>natural language or /seo"] --> orchestrator["skills/seo/SKILL.md<br/>main orchestrator"]
   orchestrator --> cache[".seo-cache<br/>shared evidence"]
-  orchestrator --> skills["26 specialist<br/>SEO workflows"]
-  skills --> agents["24 TOML agents<br/>parallel analysis slices"]
+  orchestrator --> skills["27 specialist<br/>SEO workflows"]
+  skills --> agents["25 TOML agents<br/>parallel analysis slices"]
   skills --> scripts["scripts/<br/>deterministic runners"]
   scripts --> output["output/<br/>Markdown, JSON, HTML, PDF"]
   cache --> skills
@@ -156,6 +156,7 @@ flowchart LR
 | `/seo page <url>` | Deep single-page SEO analysis |
 | `/seo technical <url>` | Crawlability, indexability, security, JavaScript, CWV |
 | `/seo content <url>` | E-E-A-T, helpfulness, readability, AI citation readiness |
+| `/seo content-brief <url-or-keyword> [page-type]` | Competitive writing brief, outline, gaps, E-E-A-T and internal links |
 | `/seo schema <url>` | Structured data detection, validation, and JSON-LD generation |
 | `/seo images <url>` | Alt text, image weight, formats, metadata, image SERP opportunities |
 | `/seo sitemap <url>` | XML sitemap discovery, quality gates, generation guidance |
@@ -335,6 +336,7 @@ Run a single workflow:
 
 ```bash
 python scripts/run_skill_workflow.py --skill seo-technical https://example.com --json
+python scripts/run_skill_workflow.py --skill seo-content-brief "target keyword" --json
 python scripts/run_skill_workflow.py --skill seo-google https://example.com --json
 python scripts/run_skill_workflow.py --skill seo-dataforseo https://example.com --json
 ```
@@ -413,8 +415,8 @@ codex-seo/
 ├── .codex-plugin/plugin.json        # Codex plugin manifest
 ├── skills/
 │   ├── seo/SKILL.md                 # Main orchestrator
-│   └── seo-*/SKILL.md               # 26 specialist workflows
-├── agents/                          # 24 Codex TOML agent profiles
+│   └── seo-*/SKILL.md               # 27 specialist workflows
+├── agents/                          # 25 Codex TOML agent profiles
 ├── scripts/                         # Deterministic runners and API helpers
 ├── extensions/
 │   ├── dataforseo/                  # DataForSEO MCP setup and docs
