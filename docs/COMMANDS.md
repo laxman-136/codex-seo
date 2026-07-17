@@ -10,6 +10,7 @@ Codex SEO works best from natural-language prompts, but command-style prompts ar
 | `/seo page <url>` | Deep single-page analysis |
 | `/seo technical <url>` | Crawlability, indexability, CWV, JavaScript, security |
 | `/seo content <url>` | E-E-A-T, helpfulness, readability, AI citation readiness |
+| `/seo content-brief <url-or-keyword> [page-type]` | Generate an evidence-aware competitive writing brief or outline |
 | `/seo schema <url>` | Structured data detection, validation, generation |
 | `/seo images <url>` | Alt text, image weight, metadata, SERP image opportunities |
 | `/seo sitemap <url>` | XML sitemap discovery, coverage, generation guidance |
@@ -43,3 +44,15 @@ python scripts/run_api_smoke_suite.py https://example.com --skill seo-drift --js
 ```
 
 Wrappers write artifacts to `output/` and cache summaries to `.seo-cache/`.
+
+
+## `/seo content-brief <url-or-keyword> [page-type]`
+
+Generates `CONTENT-BRIEF.md` and `SUMMARY.json` with search intent, genuine-competitor scoring, content-gap priorities, per-section word counts, keyword-placement guardrails, information-gain requirements, E-E-A-T checks, internal links, and explicit evidence gaps.
+
+```bash
+python scripts/run_skill_workflow.py --skill seo-content-brief "target keyword" --json
+python scripts/generate_content_brief.py "target keyword" --page-type service --json
+```
+
+No live SERP or keyword data is fabricated. Without supplied provider evidence, the workflow returns `research_required`.

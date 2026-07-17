@@ -58,3 +58,9 @@ python scripts/run_api_smoke_suite.py https://www.python.org --json
 - `seo` remains an orchestration/router skill, so API consumers should call either `seo-audit` or an explicit specialist workflow instead of expecting a dedicated `seo` execution script.
 - Premium PDF generation depends on Playwright Chromium being available.
 - Performance data uses PageSpeed data when available and deterministic heuristics otherwise; the data source is labeled in artifacts.
+
+## Content Brief Workflow
+
+| Skill | Runtime | External Data | Fallback Behaviour | Artifacts |
+|---|---|---|---|---|
+| `seo-content-brief` | Native deterministic Python runner | Optional DataForSEO, Ahrefs, or supplied competitor evidence | Returns `research_required` rather than fabricating live SEO data | `CONTENT-BRIEF.md`, `SUMMARY.json`, `.seo-cache/content-brief.json` |

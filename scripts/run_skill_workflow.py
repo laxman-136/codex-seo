@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from analyze_content import analyze_content
+from generate_content_brief import generate_content_brief, slugify as content_brief_slug
 from analyze_geo import analyze_geo
 from analyze_hreflang import analyze_hreflang
 from analyze_images import analyze_images
@@ -188,7 +189,33 @@ def run_capability_summary(
 
 def run_specialist(skill: str, target: str, output_root: Path | None = None) -> dict[str, Any]:
     """Run a specialist skill and write deterministic artifacts."""
-    target = validate_public_url(target)
+    raw_target = target.strip()
+    if not raw_target:
+        raise ValueError("A target URL, keyword, or topic is required.")
+
+    if skill == "seo-content-brief":
+        root = output_root.resolve() if output_root else (ROOT / "output").resolve()
+        output_dir = root / f"content-brief-{content_brief_slug(raw_target)}-{timestamp_slug()}"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        ensure_cache_gitignore(ROOT)
+        result = generate_content_brief(raw_target)
+        markdown = result.pop("markdown")
+        report_path = output_dir / ("CONTENT-OUTLINE.md" if result.get("outline_only") else "CONTENT-BRIEF.md")
+        summary_path = output_dir / "SUMMARY.json"
+        cache_path = ROOT / ".seo-cache" / "content-brief.json"
+        report_path.write_text(markdown, encoding="utf-8")
+        write_json(summary_path, result)
+        write_json(cache_path, result)
+        return {
+            "skill": skill,
+            "target": raw_target,
+            "output_dir": str(output_dir),
+            "artifacts": {"report": str(report_path), "summary_json": str(summary_path)},
+            "cache_path": str(cache_path),
+            "result": result,
+        }
+
+    target = validate_public_url(raw_target)
     output_dir = output_dir_for(skill, target, output_root=output_root)
     page_cache = ROOT / ".seo-cache" / "pages" / url_slug(target)
     root_cache = ROOT / ".seo-cache"
@@ -501,7 +528,7 @@ def main() -> int:
     """CLI entry point."""
     parser = argparse.ArgumentParser(description="Run a Codex SEO skill deterministically")
     parser.add_argument("--skill", required=True, help="Skill name, such as seo-content or seo-page")
-    parser.add_argument("target", help="Target URL or domain")
+    parser.add_argument("target", help="Target URL, domain, keyword, or topic depending on the skill")
     parser.add_argument("--output-root", help="Optional root directory for output artifacts")
     parser.add_argument("--json", action="store_true", help="Output JSON")
     args = parser.parse_args()

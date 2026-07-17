@@ -71,7 +71,16 @@ def settings_check(settings_path: Path, settings: dict[str, Any]) -> dict[str, A
     """Check settings permissions and sanitize MCP server metadata."""
     exists = settings_path.exists()
     mode = stat.S_IMODE(settings_path.stat().st_mode) if exists else None
-    mode_ok = bool(exists and mode is not None and mode & (stat.S_IRWXG | stat.S_IRWXO) == 0)
+    if os.name == "nt":
+        # POSIX permission bits are not authoritative on Windows.
+        # Windows file protection is controlled through ACLs instead.
+        mode_ok = exists
+    else:
+        mode_ok = bool(
+            exists
+            and mode is not None
+            and mode & (stat.S_IRWXG | stat.S_IRWXO) == 0
+        )
     servers: dict[str, Any] = {}
     mcp_servers = settings.get("mcpServers", {})
     for name, required_env in REQUIRED_MCP.items():
